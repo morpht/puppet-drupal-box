@@ -1,0 +1,31 @@
+# ************************************
+# This file is managed by Puppet
+# ************************************
+
+<VirtualHost *:<%= @port %>>
+  UseCanonicalName Off
+  VirtualDocumentRoot <%= @virtual_document_root %>
+
+  Options FollowSymLinks ExecCGI
+
+  # common and combined formats with added virtual host as the fist field:
+  LogFormat "%V %h %l %u %t \"%r\" %s %b" vcommon
+  LogFormat "%V %h %l %u %t \"%r\" %>s %b \"%{Referer}i\" \"%{User-agent}i\"" vcombined
+  CustomLog /var/log/apache2/vhost-access.log vcombined
+  ErrorLog  /var/log/apache2/vhost-error.log
+  LogLevel warn
+  ServerSignature Off
+
+  ScriptAlias /php5.fastcgi /srv/www/fastcgi
+  FastCGIExternalServer /srv/www/fastcgi -socket /run/php-fpm.sock
+  AddHandler php-fastcgi .php
+  Action php-fastcgi /php5.fastcgi virtual
+
+  <Directory /srv/www/fastcgi>
+    Options ExecCGI FollowSymLinks
+    SetHandler fastcgi-script
+    Order allow,deny
+    Allow from all
+  </Directory>
+
+</VirtualHost>
