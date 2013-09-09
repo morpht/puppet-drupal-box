@@ -1,4 +1,4 @@
-# Drupal Stack
+# Puppet Drupal Box
 
 ## Description
 Development server configuration managed using Puppet.
