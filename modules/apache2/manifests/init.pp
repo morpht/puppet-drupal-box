@@ -33,6 +33,8 @@ class apache2 ( $port = 80 ) {
   apache2::module { 'alias': ensure => present } 
   apache2::module { 'fastcgi': ensure => present } 
   apache2::module { 'rewrite': ensure => present } 
+  apache2::module { 'headers': ensure => present } 
+  apache2::module { 'expires': ensure => present } 
   apache2::module { 'vhost_alias': ensure => present } 
 
   file { 'virtual-dir' :
