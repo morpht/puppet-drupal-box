@@ -10,12 +10,16 @@
 # The desired VirtualDocumentRoot.
 # Default value: "/srv/www/vhost/%0".
 #
+# [*php_memory_limit*]
+# PHP memory_limit.
+#
 # === Authors
 #
 # Marji Cermak <marji@morpht.com>
 #
 class drupal_sandbox (
-    $virtual_document_root = '/srv/www/vhost/%0'
+    $virtual_document_root = '/srv/www/vhost/%0',
+    $php_memory_limit      = undef
 ) {
 
   include drupal_sandbox::params
@@ -28,6 +32,11 @@ class drupal_sandbox (
   # Set up all apt sources:
   include drupal_sandbox::apt_src
 
+
+  $the_php_memory_limit = $php_memory_limit ? {
+    undef   => $drupal_sandbox::params::php_memory_limit,
+    default => $php_memory_limit,
+  }
   $memcache_mem              = $drupal_sandbox::params::memcache_mem
   $apc_mem                   = $drupal_sandbox::params::apc_mem
 
@@ -53,7 +62,8 @@ class drupal_sandbox (
   class {'drush': }
 
   class {'php':
-    php_engine => 'php-fpm',
+    php_engine   => 'php-fpm',
+    memory_limit => $the_php_memory_limit,
     apc_shm_size => $apc_mem,
   }
 

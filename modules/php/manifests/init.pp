@@ -9,6 +9,9 @@
 #  What php engine to use.
 #  Expected values: libapache2-mod-php5 or php5-fpm
 #
+# [*memory_limit]
+# PHP memory limit
+#
 # [*apc_shm_size*]
 #  How much memory to alocate for APC.
 #
@@ -23,6 +26,7 @@
 #
 class php (
   $php_engine = 'mod-php',
+  $memory_limit = '96M',
   $apc_shm_size = '64M'
 ) {
 

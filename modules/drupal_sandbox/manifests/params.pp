@@ -3,6 +3,8 @@ class drupal_sandbox::params {
   # Apache port to listen on
   $apache_port = 8080 # we have varnish in front of it at port 80
 
+  $php_memory_limit = '96M'
+  
   # Assign memcache memory based on total memory: rather than matching m1.medium, m1.large
   # and m1.xlarge, we are testing for >14GB, >7GB and >3GB:
   $mem_in_gb = memorysizeraw() / 1024 / 1024 / 1024
