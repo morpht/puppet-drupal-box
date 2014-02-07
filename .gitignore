@@ -19,6 +19,7 @@ nbproject
 *.komodoproject
 .komodotools
 *~
+/.buildpath
 
 # Others
 *.diff
@@ -30,3 +31,4 @@ nbproject
 *.swp
 *.vi
 *.sass-cache
+/.pydevproject
