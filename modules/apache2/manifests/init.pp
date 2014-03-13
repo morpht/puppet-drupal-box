@@ -22,7 +22,10 @@
 #
 # Marji Cermak <marji@morpht.com>
 #
-class apache2 ( $port = 80 ) {
+class apache2 ( 
+  $port               = 80,
+  $mpm_wk_max_clients = 150
+) {
 
   package { [ 'apache2', 'libapache2-mod-fastcgi' ]:
     ensure => present,

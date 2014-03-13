@@ -75,7 +75,10 @@ class drupal_sandbox (
 
   class { 'ntpdate': }
 
-  class { 'apache2':              port => $apache_port  } 
+  class { 'apache2':
+    port               => $apache_port,
+    mpm_wk_max_clients => $apache_mpm_wk_max_clients,
+  }
   class { 'apache2::vhost_alias': 
     port                  => $apache_port,
     virtual_document_root => $virtual_document_root

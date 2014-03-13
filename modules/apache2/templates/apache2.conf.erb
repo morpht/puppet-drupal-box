@@ -119,7 +119,7 @@ KeepAliveTimeout 5
     MaxSpareThreads      75 
     ThreadLimit          64
     ThreadsPerChild      25
-    MaxClients           <%= @apache_mpm_wk_max_clients %>
+    MaxClients           <%= @mpm_wk_max_clients %>
     MaxRequestsPerChild   0
 </IfModule>
 
