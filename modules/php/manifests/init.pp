@@ -15,6 +15,18 @@
 # [*apc_shm_size*]
 #  How much memory to alocate for APC.
 #
+# [*fpm_max_children*]
+# pm.max_children for pool.d/www.conf. Only if php_engine is php5-fpm.
+#
+# [*fpm_start_servers*]
+# pm.start_servers for pool.d/www.conf. Only if php_engine is php5-fpm.
+#
+# [*fpm_min_spare_servers*]
+# pm.min_spare_servers for pool.d/www.conf. Only if php_engine is php5-fpm.
+#
+# [*fpm_max_spare_servers*]
+# pm.max_spare_servers for pool.d/www.conf. Only if php_engine is php5-fpm.
+#
 # === Examples
 #
 # class { 'php': apc_shm_size => '128M' }
@@ -25,9 +37,13 @@
 # Marji Cermak <marji@morpht.com>
 #
 class php (
-  $php_engine = 'mod-php',
-  $memory_limit = '96M',
-  $apc_shm_size = '64M'
+  $php_engine            = 'mod-php',
+  $memory_limit          = '96M',
+  $apc_shm_size          = '64M',
+  $fpm_max_children      = 10,
+  $fpm_start_servers     = 4,
+  $fpm_min_spare_servers = 2,
+  $fpm_max_spare_servers = 6
 ) {
 
   case $php_engine {

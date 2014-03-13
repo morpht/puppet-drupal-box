@@ -62,9 +62,13 @@ class drupal_sandbox (
   class {'drush': }
 
   class {'php':
-    php_engine   => 'php-fpm',
-    memory_limit => $the_php_memory_limit,
-    apc_shm_size => $apc_mem,
+    php_engine            => 'php-fpm',
+    memory_limit          => $the_php_memory_limit,
+    apc_shm_size          => $apc_mem,
+    fpm_max_children      => $fpm_max_children,
+    fpm_start_servers     => $fpm_start_servers,
+    fpm_min_spare_servers => $fpm_min_spare_servers,
+    fpm_max_spare_servers => $fpm_max_spare_servers,
   }
 
 
