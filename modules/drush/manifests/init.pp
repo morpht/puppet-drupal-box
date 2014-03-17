@@ -1,6 +1,6 @@
 # == Class: drush
 #
-# This class installs Drush. 
+# This class installs Drush.
 # For Debian based systems due to the php-console-table package dependency.
 #
 # === Details:
@@ -18,22 +18,26 @@
 #
 # === Examples
 #
-# class { 'drush': version => '7.x-5.9' }
+# class { 'drush': version => '5.10.0' }
 # include drush
 #
 # === Authors
 #
 # Marji Cermak <marji@morpht.com>
 #
+# === History
+#
+#  - 2014/03/17 - changed source to github.com, relaying on the archive there,
+#    as the drush project does not use ftp.drupal.org anymore
 
-class drush ( $version = '7.x-5.9') {
+class drush ( $version = '6.2.0') {
 
   package { 'php-console-table':
      ensure => present,
   }
 
   exec { 'drush-retrieve':
-    command => "wget http://ftp.drupal.org/files/projects/drush-${version}.tar.gz",
+    command => "wget https://github.com/drush-ops/drush/archive/${version}.tar.gz -O /tmp/drush-${version}.tar.gz",
     cwd     => "/tmp",
     creates => "/tmp/drush-${version}.tar.gz",
     path    => ['/bin', '/usr/bin'],
@@ -41,7 +45,9 @@ class drush ( $version = '7.x-5.9') {
   }
 
   exec { 'drush-untar':
-    command => "tar xzf /tmp/drush-${version}.tar.gz --transform s/drush/drush-${version}/ --no-same-owner",
+    # github drush archives have version in the directory name, the transform is not needed:
+    # command => "tar xzf /tmp/drush-${version}.tar.gz --transform s/drush/drush-${version}/ --no-same-owner",
+    command => "tar xzf /tmp/drush-${version}.tar.gz --no-same-owner",
     cwd     => '/opt',
     creates => "/opt/drush-${version}",
     path    => ['/bin', '/usr/bin'],
