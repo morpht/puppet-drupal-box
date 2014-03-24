@@ -5,7 +5,7 @@
 	compress
 	delaycompress
 	notifempty
-	create 640 root adm
+  create <%= @logfiles_mode %> root <%= @log_group %>
 	sharedscripts
 	postrotate
 		/etc/init.d/apache2 reload > /dev/null
