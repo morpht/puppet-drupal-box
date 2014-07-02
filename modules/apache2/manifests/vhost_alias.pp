@@ -10,6 +10,10 @@
 # [*virtual_document_root*]
 # The VirtualDocumentRoot to use.
 #
+# [*fcgi_idle_timeout*]
+# FastCGIExternalServer: idle-timeout
+# http://www.fastcgi.com/mod_fastcgi/docs/mod_fastcgi.html#FastCgiExternalServer
+#
 # === Authors
 #
 # Marji Cermak <marji@morpht.com>
@@ -36,7 +40,7 @@ class apache2::vhost_alias (
     unless   => "test -L /etc/apache2/sites-enabled/${vhost_name}",
     notify   => Service['apache2'],
     require  => File["/etc/apache2/sites-available/${vhost_name}"],
-  }   
+  }
 
 }
 

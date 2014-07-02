@@ -22,7 +22,7 @@
 #
 # Marji Cermak <marji@morpht.com>
 #
-class apache2 ( 
+class apache2 (
   $port               = 80,
   $mpm_wk_max_clients = 150
 ) {
@@ -32,25 +32,25 @@ class apache2 (
   }
 
   # Enable modules needed for fastcgi php-fpm
-  apache2::module { 'actions': ensure => present } 
-  apache2::module { 'alias': ensure => present } 
-  apache2::module { 'fastcgi': ensure => present } 
-  apache2::module { 'rewrite': ensure => present } 
-  apache2::module { 'headers': ensure => present } 
-  apache2::module { 'expires': ensure => present } 
-  apache2::module { 'vhost_alias': ensure => present } 
+  apache2::module { 'actions':     ensure => present }
+  apache2::module { 'alias':       ensure => present }
+  apache2::module { 'fastcgi':     ensure => present }
+  apache2::module { 'rewrite':     ensure => present }
+  apache2::module { 'headers':     ensure => present }
+  apache2::module { 'expires':     ensure => present }
+  apache2::module { 'vhost_alias': ensure => present }
 
   file { 'virtual-dir' :
-    path   => '/srv/www',
     ensure => directory,
+    path   => '/srv/www',
     owner  => 'root',
     group  => 'root',
     mode   => '0755',
   }
 
   service { 'apache2':
-    enable   => true,
     ensure   => running,
+    enable   => true,
     require  => Package['apache2'],
   }
 
