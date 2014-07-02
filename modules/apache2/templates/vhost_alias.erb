@@ -17,7 +17,7 @@
   ServerSignature Off
 
   ScriptAlias /php5.fastcgi /srv/www/fastcgi
-  FastCGIExternalServer /srv/www/fastcgi -socket /run/php-fpm.sock -pass-header Authorization
+  FastCGIExternalServer /srv/www/fastcgi -socket /run/php-fpm.sock -pass-header Authorization -idle-timeout <%= @fcgi_idle_timeout %>
   AddHandler php-fastcgi .php
   Action php-fastcgi /php5.fastcgi virtual
 

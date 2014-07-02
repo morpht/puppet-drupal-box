@@ -20,7 +20,8 @@
 #
 class apache2::vhost_alias (
     $port                  = '80',
-    $virtual_document_root = '/srv/www/%0/docroot'
+    $virtual_document_root = '/srv/www/%0/docroot',
+    $fcgi_idle_timeout     = 120
 ) {
 
   $vhost_name = 'vhost_alias'
