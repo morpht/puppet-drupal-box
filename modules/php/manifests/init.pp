@@ -1,5 +1,5 @@
 # == Class: php
-# This class installs php. 
+# This class installs php.
 #
 # === Details:
 #
@@ -54,7 +54,6 @@ class php (
   package { [
     'php5',
     $php_engine_pkg,
-    'php-apc',
     'php-pear',
     'php5-cli',
     'php5-common',
@@ -63,11 +62,49 @@ class php (
     'php5-mcrypt',
     'php5-mysql',
     'php5-memcached',
-    'php5-suhosin',
     'php5-xdebug',
     'php5-xhprof'
  ]:
       ensure  => installed,
+  }
+
+  if $::lsbrelease == 'precise' {
+    package { 'php5-apc':
+      ensure  => installed,
+    }
+    package { 'php5-suhosin':
+      ensure  => installed,
+    }
+
+    file { 'apc.ini':
+      path    => '/etc/php5/conf.d/apc.ini',
+      ensure  => present,
+      content => template('php/conf.d/apc.ini.erb'),
+      owner   => 'root',
+      group   => 'root',
+      mode    => '0444',
+      require => Package['php-apc'],
+    }
+
+    file { 'suhosin.ini':
+      path    => '/etc/php5/conf.d/suhosin.ini',
+      ensure  => present,
+      content => template('php/conf.d/suhosin.ini.erb'),
+      owner   => 'root',
+      group   => 'root',
+      mode    => '0444',
+      require => Package['php5-suhosin'],
+    }
+
+    # cli-php.ini needs the php5-suhosin package, but only on precise:
+    Package['php5-suhosin'] -> File['cli-php.ini']
+
+    # we want the php5-fpm to be notified on change
+    # @todo: we should notify apache if we use libapache2-mod-php5
+    if $php_engine == 'php-fpm' {
+      File['suhosin.ini'] ~> Service['php5-fpm']
+      File['apc.ini'] ~> Service['php5-fpm']
+    }
   }
 
   if $php_engine == 'php-fpm' {
@@ -78,7 +115,6 @@ class php (
       hasrestart => true,
       require    => Package['php5-fpm'],
       restart    => '/etc/init.d/php5-fpm reload',
-      subscribe  => File['apc.ini', 'suhosin.ini' ],
     }
 
     file { '/etc/php5/fpm/pool.d/www.conf':
@@ -92,24 +128,5 @@ class php (
     }
   }
 
-  file { 'apc.ini':
-    path    => '/etc/php5/conf.d/apc.ini',
-    ensure  => present,
-    content => template('php/conf.d/apc.ini.erb'),
-    owner   => 'root',
-    group   => 'root',
-    mode    => '0444',
-    require => Package['php-apc'],
-  }
-
-  file { 'suhosin.ini':
-    path    => '/etc/php5/conf.d/suhosin.ini',
-    ensure  => present,
-    content => template('php/conf.d/suhosin.ini.erb'),
-    owner   => 'root',
-    group   => 'root',
-    mode    => '0444',
-    require => Package['php5-suhosin'],
-  }
 }
 
