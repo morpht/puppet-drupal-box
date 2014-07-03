@@ -4,11 +4,16 @@ module Puppet::Parser::Functions
     mem = mem.to_f
     # Normalize mem to KiB
     case unit
-      when nil:  mem *= (1<<0)
-      when 'kB': mem *= (1<<10)
-      when 'MB': mem *= (1<<20)
-      when 'GB': mem *= (1<<30)
-      when 'TB': mem *= (1<<40)
+      when nil
+         mem *= (1<<0)
+      when 'kB'
+         mem *= (1<<10)
+      when 'MB'
+         mem *= (1<<20)
+      when 'GB'
+         mem *= (1<<30)
+      when 'TB'
+         mem *= (1<<40)
     end
     mem
   end
