@@ -1,5 +1,5 @@
 # == Class: php
-# This class installs php. 
+# This class installs php.
 #
 # === Details:
 #
@@ -13,7 +13,14 @@
 # PHP memory limit
 #
 # [*apc_shm_size*]
-#  How much memory to alocate for APC.
+# How much memory to alocate for APC.
+#
+# [*apc_ttl*]
+# apc.ttl: http://php.net/manual/en/apc.configuration.php#ini.apc.ttl
+#
+# [*apc_user_ttl*]
+# apc.user_ttl: http://php.net/manual/en/apc.configuration.php#ini.apc.user-ttl
+# If not specified (undef), it will be set to the same value as apc.ttl
 #
 # [*fpm_max_children*]
 # pm.max_children for pool.d/www.conf. Only if php_engine is php5-fpm.
@@ -40,11 +47,19 @@ class php (
   $php_engine            = 'mod-php',
   $memory_limit          = '96M',
   $apc_shm_size          = '64M',
+  $apc_ttl               = 0,
+  $apc_user_ttl          = undef,
   $fpm_max_children      = 10,
   $fpm_start_servers     = 4,
   $fpm_min_spare_servers = 2,
   $fpm_max_spare_servers = 6
 ) {
+
+  # if $apc_user_ttl hasn't been defined, it makes sense to use the same value as $apc_ttl:
+  $my_apc_user_ttl = $apc_user_ttl ? {
+    undef   => $apc_ttl,
+    default => $apc_user_ttl,
+  }
 
   case $php_engine {
     mod-php: { $php_engine_pkg = 'libapache2-mod-php5' }
