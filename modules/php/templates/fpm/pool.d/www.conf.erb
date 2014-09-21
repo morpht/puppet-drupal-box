@@ -41,11 +41,11 @@ listen = /var/run/php-fpm.sock
 ; permissions must be set in order to allow connections from a web server. Many
 ; BSD-derived systems allow connections regardless of permissions.
 ; Default Values: user and group are set as the running user
-;                 mode is set to 0666
-;listen.owner = www-data
-;listen.group = www-data
-;listen.mode = 0666
- 
+;                 mode is set to 0660
+listen.owner = www-data
+listen.group = www-data
+listen.mode = 0660
+
 ; List of ipv4 addresses of FastCGI clients which are allowed to connect.
 ; Equivalent to the FCGI_WEB_SERVER_ADDRS environment variable in the original
 ; PHP FCGI (5.2.2+). Makes sense only with a tcp listening socket. Each address
