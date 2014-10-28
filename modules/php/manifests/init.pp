@@ -34,6 +34,10 @@
 # [*fpm_max_spare_servers*]
 # pm.max_spare_servers for pool.d/www.conf. Only if php_engine is php5-fpm.
 #
+# [*ensure_php_debug_pkgs*]
+# whether to install php5-xdebug' and 'php5-xhprof'
+# Valid values are: present, installed, absent, purged
+#
 # === Examples
 #
 # class { 'php': apc_shm_size => '128M' }
@@ -52,9 +56,13 @@ class php (
   $fpm_max_children      = 10,
   $fpm_start_servers     = 4,
   $fpm_min_spare_servers = 2,
-  $fpm_max_spare_servers = 6
+  $fpm_max_spare_servers = 6,
+  $ensure_php_debug_pkgs = 'installed'
 ) {
 
+  if ! ($ensure_php_debug_pkgs in [ 'present', 'installed', 'absent', 'purged' ]) {
+    fail('ensure_php_debug_pkgs parameter has wrong value')
+  }
   # if $apc_user_ttl hasn't been defined, it makes sense to use the same value as $apc_ttl:
   $my_apc_user_ttl = $apc_user_ttl ? {
     undef   => $apc_ttl,
@@ -78,11 +86,15 @@ class php (
     'php5-mcrypt',
     'php5-mysql',
     'php5-memcached',
-    'php5-suhosin',
+    'php5-suhosin'
+ ]:
+      ensure  => installed,
+  }
+  package { [
     'php5-xdebug',
     'php5-xhprof'
  ]:
-      ensure  => installed,
+      ensure  => $ensure_php_debug_pkgs,
   }
 
   if $php_engine == 'php-fpm' {
