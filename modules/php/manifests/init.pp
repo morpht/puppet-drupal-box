@@ -12,6 +12,10 @@
 # [*memory_limit]
 # PHP memory limit
 #
+# [*php_apc_pkg*]
+# The name of php_apc package to use. Default is php-fpm (ubuntu default).
+# The dotdeb repo uses php5-apc.
+#
 # [*apc_shm_size*]
 # How much memory to alocate for APC.
 #
@@ -51,6 +55,7 @@ class php (
   $php_engine            = 'mod-php',
   $memory_limit          = '96M',
   $apc_shm_size          = '64M',
+  $php_apc_pkg           = 'php-apc',
   $apc_ttl               = 0,
   $apc_user_ttl          = undef,
   $fpm_max_children      = 10,
@@ -63,6 +68,18 @@ class php (
   if ! ($ensure_php_debug_pkgs in [ 'present', 'installed', 'absent', 'purged' ]) {
     fail('ensure_php_debug_pkgs parameter has wrong value')
   }
+
+  # when one of the apc packages is in, the other needs to be absent:
+  if $php_apc_pkg == 'php-apc' {
+    $remove_apc_pkg = 'php5-apc'
+  }
+  elsif $php_apc_pkg == 'php5-apc' {
+    $remove_apc_pkg = 'php-apc'
+  }
+  else {
+    fail('php_apc_parameter needs to be php5-apc or php-apc')
+  }
+
   # if $apc_user_ttl hasn't been defined, it makes sense to use the same value as $apc_ttl:
   $my_apc_user_ttl = $apc_user_ttl ? {
     undef   => $apc_ttl,
@@ -77,7 +94,6 @@ class php (
   package { [
     'php5',
     $php_engine_pkg,
-    'php-apc',
     'php-pear',
     'php5-cli',
     'php5-common',
@@ -90,6 +106,12 @@ class php (
  ]:
       ensure  => installed,
   }
+  package { $php_apc_pkg:
+    ensure  =>  installed,
+    require => Package[$remove_apc_pkg],
+  }
+  package { $remove_apc_pkg: ensure => purged }
+
   package { [
     'php5-xdebug',
     'php5-xhprof'
@@ -126,7 +148,7 @@ class php (
     owner   => 'root',
     group   => 'root',
     mode    => '0444',
-    require => Package['php-apc'],
+    require => Package[$php_apc_pkg],
   }
 
   file { 'suhosin.ini':
