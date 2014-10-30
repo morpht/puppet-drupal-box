@@ -59,7 +59,7 @@ class drupal_sandbox (
     innodb_log_file_size    => $innodb_log_file_size
   }
 
-  class { 'drush': version => '6.2.0' }
+  class { 'drush': version => '6.4.0' }
 
   class {'php':
     php_engine            => 'php-fpm',
@@ -84,7 +84,7 @@ class drupal_sandbox (
     port               => $apache_port,
     mpm_wk_max_clients => $apache_mpm_wk_max_clients,
   }
-  class { 'apache2::vhost_alias': 
+  class { 'apache2::vhost_alias':
     port                  => $apache_port,
     virtual_document_root => $virtual_document_root
   }
