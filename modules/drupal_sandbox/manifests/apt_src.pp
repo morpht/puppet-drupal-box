@@ -55,8 +55,8 @@ class drupal_sandbox::apt_src {
   apt::source { 'percona':
     location   => 'http://repo.percona.com/apt',
     repos      => 'main',
-    key        => 'CD2EFD2A',
-    key_server => 'keys.gnupg.net',
+    key        => '1C4CBDCDCD2EFD2A',
+    key_server => 'keyserver.ubuntu.com',
   }
 
   # only for precise, we use dotdeb repo:
