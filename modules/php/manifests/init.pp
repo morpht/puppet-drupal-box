@@ -114,7 +114,7 @@ class php (
       enable     => true,
       hasrestart => true,
       require    => Package['php5-fpm'],
-      restart    => '/etc/init.d/php5-fpm reload',
+      provider   => upstart,
     }
 
     file { '/etc/php5/fpm/pool.d/www.conf':
