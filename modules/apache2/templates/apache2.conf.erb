@@ -8,7 +8,7 @@
 #
 # Do NOT simply read the instructions in here without understanding
 # what they do.  They're here only as hints or reminders.  If you are unsure
-# consult the online docs. You have been warned.  
+# consult the online docs. You have been warned.
 #
 # The configuration directives are grouped into three basic sections:
 #  1. Directives that control the operation of the Apache server process as a
@@ -77,7 +77,7 @@ KeepAlive On
 # during a persistent connection. Set to 0 to allow an unlimited amount.
 # We recommend you leave this number high, for maximum performance.
 #
-MaxKeepAliveRequests 100
+MaxKeepAliveRequests <%= @max_keep_alive_requests %>
 
 #
 # KeepAliveTimeout: Number of seconds to wait for the next request from the
@@ -87,7 +87,7 @@ KeepAliveTimeout 5
 
 ##
 ## Server-Pool Size Regulation (MPM specific)
-## 
+##
 
 # prefork MPM
 # StartServers: number of server processes to start
@@ -116,7 +116,7 @@ KeepAliveTimeout 5
 <IfModule mpm_worker_module>
     StartServers          2
     MinSpareThreads      25
-    MaxSpareThreads      75 
+    MaxSpareThreads      75
     ThreadLimit          64
     ThreadsPerChild      25
     MaxClients           <%= @mpm_wk_max_clients %>
@@ -133,7 +133,7 @@ KeepAliveTimeout 5
 <IfModule mpm_event_module>
     StartServers          2
     MinSpareThreads      25
-    MaxSpareThreads      75 
+    MaxSpareThreads      75
     ThreadLimit          64
     ThreadsPerChild      25
     MaxClients          150
@@ -153,8 +153,8 @@ Group ${APACHE_RUN_GROUP}
 AccessFileName .htaccess
 
 #
-# The following lines prevent .htaccess and .htpasswd files from being 
-# viewed by Web clients. 
+# The following lines prevent .htaccess and .htpasswd files from being
+# viewed by Web clients.
 #
 <Files ~ "^\.ht">
     Order allow,deny
@@ -204,7 +204,7 @@ ErrorLog ${APACHE_LOG_DIR}/error.log
 # Possible values include: debug, info, notice, warn, error, crit,
 # alert, emerg.
 #
-LogLevel warn
+LogLevel <%= @log_level %>
 
 # Include module configuration:
 Include mods-enabled/*.load

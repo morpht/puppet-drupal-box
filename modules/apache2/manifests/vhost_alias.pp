@@ -4,6 +4,9 @@
 #
 # === Variables
 #
+# [*addr*]
+# The IP address ov the virtual host.
+#
 # [*port*]
 # The port for the vhost.
 #
@@ -19,7 +22,9 @@
 # Marji Cermak <marji@morpht.com>
 #
 class apache2::vhost_alias (
+    $addr                  = '127.0.0.1',
     $port                  = '80',
+    $log_level             = 'debug',
     $virtual_document_root = '/srv/www/%0/docroot',
     $fcgi_idle_timeout     = 120
 ) {

@@ -5,8 +5,8 @@
 # Debian etch). See /usr/share/doc/apache2.2-common/NEWS.Debian.gz and
 # README.Debian.gz
 
-NameVirtualHost *:<%= @port %>
-Listen <%= @port %>
+NameVirtualHost <%= @addr %>:<%= @port %>
+Listen <%= @listen_addr_port %>
 
 <IfModule mod_ssl.c>
     # If you add NameVirtualHost *:443 here, you will also have to change

@@ -15,7 +15,7 @@
 #
 # === Examples
 #
-# class {'apache2': port => 8080 }
+# class {'apache2': addr => '*', port => 8080 }
 # include apache2
 #
 # === Authors
@@ -23,8 +23,11 @@
 # Marji Cermak <marji@morpht.com>
 #
 class apache2 (
-  $port               = 80,
-  $mpm_wk_max_clients = 150
+  $port                    = 80,
+  $addr                    = '127.0.0.1',
+  $log_level               = 'debug',
+  $max_keep_alive_requests = 100,
+  $mpm_wk_max_clients      = 150
 ) {
 
   package { [ 'apache2', 'libapache2-mod-fastcgi' ]:
@@ -64,6 +67,11 @@ class apache2 (
     notify   => Service['apache2'],
   }
 
+  # if addr is '*', omit the addr part in listen:
+  $listen_addr_port = $addr ? {
+    '*'      => $port,
+    default  => "${addr}:${port}",
+  }
   file { '/etc/apache2/ports.conf' :
     ensure   => present,
     owner    => 'root',
