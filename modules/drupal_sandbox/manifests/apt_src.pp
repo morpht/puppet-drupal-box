@@ -22,7 +22,7 @@ class drupal_sandbox::apt_src {
   class { 'apt': purge_sources_list => true }
 
   # We want to get the region, e.g. us-west-1 or ap-southeast-2
-  # but at least in AU, it returns ap-southeast-2b 
+  # but at least in AU, it returns ap-southeast-2b
   # so we need to cut of the character behind -digit, if any:
   if $::ec2_placement_availability_zone =~ /^(.+-\d)[a-z]{0,1}$/ {
     $archive = "http://${1}.ec2.archive.ubuntu.com/ubuntu/"
@@ -41,7 +41,7 @@ class drupal_sandbox::apt_src {
   }
   apt::source { 'precise-security':
     location   => 'http://security.ubuntu.com/ubuntu',
-    release    => 'precise',
+    release    => 'precise-security',
     repos      => 'main universe multiverse',
   }
   #
