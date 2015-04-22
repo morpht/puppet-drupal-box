@@ -29,9 +29,11 @@ class apache2::vhost_alias (
     $fcgi_idle_timeout     = 120
 ) {
 
+  $vhost_root_dir = regsubst($virtual_document_root,'^(.+)/(.*%.+)$','\1')
+
   $vhost_name = 'vhost_alias'
 
-  file { "/etc/apache2/sites-available/${vhost_name}" :
+  file { "/etc/apache2/sites-available/${vhost_name}.conf" :
     ensure   => present,
     owner    => 'root',
     group    => 'root',
@@ -43,9 +45,9 @@ class apache2::vhost_alias (
 
   exec { "/usr/sbin/a2ensite ${vhost_name}":
     path     => '/usr/bin:/usr/sbin:/bin',
-    unless   => "test -L /etc/apache2/sites-enabled/${vhost_name}",
+    unless   => "test -L /etc/apache2/sites-enabled/${vhost_name}.conf",
     notify   => Service['apache2'],
-    require  => File["/etc/apache2/sites-available/${vhost_name}"],
+    require  => File["/etc/apache2/sites-available/${vhost_name}.conf"],
   }
 
 }

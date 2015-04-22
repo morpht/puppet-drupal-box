@@ -57,15 +57,15 @@ class apache2 (
     require  => Package['apache2'],
   }
 
-  file { '/etc/apache2/apache2.conf' :
-    ensure   => present,
-    owner    => 'root',
-    group    => 'root',
-    mode     => '0444',
-    content  => template('apache2/apache2.conf.erb'),
-    require  => Package['apache2'],
-    notify   => Service['apache2'],
-  }
+  #file { '/etc/apache2/apache2.conf' :
+  #  ensure   => present,
+  #  owner    => 'root',
+  #  group    => 'root',
+  #  mode     => '0444',
+  #  content  => template('apache2/apache2.conf.erb'),
+  #  require  => Package['apache2'],
+  #  notify   => Service['apache2'],
+  #}
 
   # if addr is '*', omit the addr part in listen:
   $listen_addr_port = $addr ? {
@@ -82,17 +82,8 @@ class apache2 (
     notify   => Service['apache2'],
   }
 
-  # Good practice, there were troubles when the 'ServerName' was not defined.
-  file { '/etc/apache2/conf.d/fqdn' :
-    ensure   => present,
-    owner    => 'root',
-    group    => 'root',
-    mode     => '0644',
-    content  => "ServerName localhost\n",
-    require  => Package['apache2'],
-  }
 
-  file { '/etc/apache2/sites-enabled/000-default' :
+  file { '/etc/apache2/sites-enabled/000-default.conf' :
     ensure   => absent,
     require  => Package['apache2'],
   }

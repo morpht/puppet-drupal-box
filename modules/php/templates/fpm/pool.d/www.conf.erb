@@ -30,12 +30,11 @@ group = www-data
 ;                            specific port;
 ;   '/path/to/unix/socket' - to listen on a unix socket.
 ; Note: This value is mandatory.
-;listen = 127.0.0.1:9000
-listen = /var/run/php-fpm.sock
+listen = /var/run/php5-fpm.sock
 
-; Set listen(2) backlog. A value of '-1' means unlimited.
-; Default Value: 128 (-1 on FreeBSD and OpenBSD)
-;listen.backlog = -1
+; Set listen(2) backlog.
+; Default Value: 65535 (-1 on FreeBSD and OpenBSD)
+;listen.backlog = 65535
 
 ; Set permissions for unix socket, if one is used. In Linux, read/write
 ; permissions must be set in order to allow connections from a web server. Many
@@ -276,7 +275,7 @@ pm.max_requests = 500
 ;      - %{megabytes}M
 ;      - %{mega}M
 ;  %n: pool name
-;  %o: ouput header
+;  %o: output header
 ;      it must be associated with embraces to specify the name of the header:
 ;      - %{Content-Type}o
 ;      - %{X-Powered-By}o
@@ -391,3 +390,4 @@ chdir = /
 ;php_admin_value[error_log] = /var/log/fpm-php.www.log
 ;php_admin_flag[log_errors] = on
 php_admin_value[memory_limit] = <%= @memory_limit %>
+

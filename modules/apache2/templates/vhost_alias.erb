@@ -7,6 +7,10 @@
   VirtualDocumentRoot <%= @virtual_document_root %>
 
   Options FollowSymLinks ExecCGI
+  <Directory <%= @vhost_root_dir %>>
+    Require all granted
+    AllowOverride All
+  </Directory>
 
   # common and combined formats with added virtual host as the fist field:
   LogFormat "%V %h %l %u %t \"%r\" %s %b" vcommon
@@ -16,8 +20,8 @@
   LogLevel <%= @log_level %>
   ServerSignature Off
 
-  ScriptAlias /php5.fastcgi /srv/www/fastcgi
-  FastCGIExternalServer /srv/www/fastcgi -socket /run/php-fpm.sock -pass-header Authorization -idle-timeout <%= @fcgi_idle_timeout %>
+  ScriptAlias /php5.fastcgi /srv/www/fastcgi/php5.fastcgi
+  FastCGIExternalServer /srv/www/fastcgi -socket /run/php5-fpm.sock -pass-header Authorization -idle-timeout <%= @fcgi_idle_timeout %>
   AddHandler php-fastcgi .php
   Action php-fastcgi /php5.fastcgi virtual
 
@@ -36,9 +40,7 @@
 
   <Directory /srv/www/fastcgi>
     Options ExecCGI FollowSymLinks
-    SetHandler fastcgi-script
-    Order allow,deny
-    Allow from all
+    Require all granted
   </Directory>
 
 </VirtualHost>

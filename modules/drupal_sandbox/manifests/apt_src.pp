@@ -21,6 +21,11 @@ class drupal_sandbox::apt_src {
   #
   class { 'apt': purge_sources_list => true }
 
+  if $::lsbdistcodename == '' {
+    fail('drupal_sandbox::apt_src: expecting ::lsbdistcodename')
+  }
+  $codename = $::lsbdistcodename
+
   # We want to get the region, e.g. us-west-1 or ap-southeast-2
   # but at least in AU, it returns ap-southeast-2b
   # so we need to cut of the character behind -digit, if any:
@@ -29,19 +34,19 @@ class drupal_sandbox::apt_src {
   } else {
     $archive = "http://us.archive.ubuntu.com/ubuntu/"
   }
-  apt::source { 'precise':
+  apt::source { $codename:
     location   => $archive,
-    release    => 'precise',
+    release    => $codename,
     repos      => 'main universe multiverse',
   }
-  apt::source { 'precise-updates':
+  apt::source { "${codename}-updates":
     location   => $archive,
-    release    => 'precise-updates',
+    release    => "${codename}-updates",
     repos      => 'main universe multiverse',
   }
-  apt::source { 'precise-security':
+  apt::source { "${codename}-security":
     location   => 'http://security.ubuntu.com/ubuntu',
-    release    => 'precise-security',
+    release    => "${codename}-security",
     repos      => 'main universe multiverse',
   }
   #
@@ -50,15 +55,18 @@ class drupal_sandbox::apt_src {
   apt::source { 'percona':
     location   => 'http://repo.percona.com/apt',
     repos      => 'main',
-    key        => 'CD2EFD2A',
-    key_server => 'keys.gnupg.net',
+    key        => '1C4CBDCDCD2EFD2A',
+    key_server => 'keyserver.ubuntu.com',
   }
 
-  apt::source { 'dotdeb':
-    location   => 'http://packages.dotdeb.org',
-    release    => 'squeeze',
-    repos      => 'all',
-    key        => '89DF5277',
-    key_source => 'http://www.dotdeb.org/dotdeb.gpg',
+  # only for precise, we use dotdeb repo:
+  if $codename == 'precise' {
+    apt::source { 'dotdeb':
+      location   => 'http://packages.dotdeb.org',
+      release    => 'squeeze',
+      repos      => 'all',
+      key        => '89DF5277',
+      key_source => 'http://www.dotdeb.org/dotdeb.gpg',
+    }
   }
 }
