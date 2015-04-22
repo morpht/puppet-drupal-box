@@ -40,6 +40,7 @@ This project supports vagrant.
 ```
 git clone https://github.com/morpht/puppet-drupal-box.git
 cd puppet-drupal-box
+git submodule update --init
 vagrant up
 ```
 
