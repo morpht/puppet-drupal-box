@@ -19,4 +19,5 @@ Vagrant.configure("2") do |config|
   # sudo apt-get install nfs-common nfs-kernel-server
   # Mac should have this by default.
   config.vm.synced_folder "./vhost", "/srv/www/vhost", type: "nfs"
+  config.vm.synced_folder ".", "/opt/puppet-drupal-box", type: "nfs"
 end

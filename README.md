@@ -2,16 +2,15 @@
 
 ## Description
 Development server configuration managed using Puppet.
-Currently for Ubuntu 12.04 LTS (and possible newer versions).
+Currently for Ubuntu 14.04 LTS (trusty).
 
 ## Used components
 -    varnish 3 (port 80)
--    apache 2.2  (port 8080) with mod_vhost_alias
--    latest php-fpm 5.3 (currently 5.3.27, from http://packages.dotdeb.org squeeze)
+-    apache 2.4  (port 8080) with mod_vhost_alias
+-    php-fpm 5.5
 -    percona server 5.5
 -    memcached
--    php-apc
--    drush 7.x-5.9
+-    drush 6.4
 -    ntpdate (executed daily from cron)
 -    postfix, delivering all mails (catch-all) to the 'localmail' user.
 
@@ -36,22 +35,41 @@ If you want a different VirtualDocumentRoot, you can specify yours:
 sudo puppet apply --modulepath=/opt/puppet-drupal-box/modules -e "class { 'drupal_sandbox': virtual_document_root => '/srv/www/%0' }"
 ```
 
+## Vagrant
+This project supports vagrant.
+```
+git clone https://github.com/morpht/puppet-drupal-box.git
+cd puppet-drupal-box
+vagrant up
+```
+
 ## Notes
 -   Find your mysql (randomly generated) root password in /etc/mysql/root-passwd.
 
--   Create /srv/www/vhost/ and change the owner to you / vagrant / ubuntu user
+
+-   For vagrant, use the "vhost" directory for your virtual hosts, they are mapped inside vagrant into the /srv/www/vhost
+
+-   If not using vagrant up, create /srv/www/vhost/ inside your machine.
 
 -   Parameters, especially memory settings for the services based on availale memory are under /opt/puppet-drupal-box/modules/drupal_sandbox/manifests/params.pp. Change as you need and run puppet apply again.
 
 ## Examples
-Create info.example.com virtualhost with phpinfo().
+Create info.example.com virtualhost with phpinfo(), inside your virtual machine:
 ```
 sudo mkdir -p /srv/www/vhost/info.example.com
 echo '<?php phpinfo(); ?>' > /tmp/index.php
 sudo mv /tmp/index.php /srv/www/vhost/info.example.com/
 
 ```
-Make info.example.com resolve to your server and point your browser at http://info.example.com
+Make info.example.com resolve to your virtual machine and point your browser at http://info.example.com
+
+## Vagrant example
+Create info.example.com virtualhost with phpinfo(), using the vhost directory:
+```
+mkdir info.example.com
+echo '<?php phpinfo(); ?>' > info.example.com/index.php
+```
+Make info.example.com resolve to your virtual machine and point your browser at http://info.example.com
 
 ## Author
-Marji Cermak <marji@morpht.com> 
+Marji Cermak <marji@morpht.com>

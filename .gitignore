@@ -1,5 +1,8 @@
-# exclude the vhost directory
+# Vagrant:
+# exclude the vhost directory for vagrant:
 vhost
+#
+.vagrant
 
 # OS
 .DS_Store
