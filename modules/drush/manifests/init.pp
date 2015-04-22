@@ -18,7 +18,7 @@
 #
 # === Examples
 #
-# class { 'drush': version => '5.10.0' }
+# class { 'drush': version => '6.2.0' }
 # include drush
 #
 # === Authors
@@ -30,7 +30,7 @@
 #  - 2014/03/17 - changed source to github.com, relaying on the archive there,
 #    as the drush project does not use ftp.drupal.org anymore
 
-class drush ( $version = '6.2.0') {
+class drush ( $version = '6.4.0') {
 
   package { 'php-console-table':
      ensure => present,

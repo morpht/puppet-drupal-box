@@ -2,7 +2,7 @@
 # This file is managed by Puppet
 # ************************************
 
-<VirtualHost *:<%= @port %>>
+<VirtualHost <%= @addr %>:<%= @port %>>
   UseCanonicalName Off
   VirtualDocumentRoot <%= @virtual_document_root %>
 
@@ -17,13 +17,26 @@
   LogFormat "%V %h %l %u %t \"%r\" %>s %b \"%{Referer}i\" \"%{User-agent}i\"" vcombined
   CustomLog /var/log/apache2/vhost-access.log vcombined
   ErrorLog  /var/log/apache2/vhost-error.log
-  LogLevel warn
+  LogLevel <%= @log_level %>
   ServerSignature Off
 
   ScriptAlias /php5.fastcgi /srv/www/fastcgi/php5.fastcgi
   FastCGIExternalServer /srv/www/fastcgi -socket /run/php5-fpm.sock -pass-header Authorization -idle-timeout <%= @fcgi_idle_timeout %>
   AddHandler php-fastcgi .php
   Action php-fastcgi /php5.fastcgi virtual
+
+
+  <Directory /srv/www/vhost/*/docroot>
+    RewriteEngine on
+
+    # Prevent invalid request methods
+    RewriteCond %{REQUEST_METHOD} !^(GET|POST|HEAD|PUT)$
+    RewriteRule .* - [F]
+
+    # Deny access to dot files
+    RewriteRule "(^|/)\." - [F]
+
+  </Directory>
 
   <Directory /srv/www/fastcgi>
     Options ExecCGI FollowSymLinks

@@ -12,9 +12,6 @@
 # [*memory_limit]
 # PHP memory limit
 #
-# [*apc_shm_size*]
-#  How much memory to alocate for APC.
-#
 # [*fpm_max_children*]
 # pm.max_children for pool.d/www.conf. Only if php_engine is php5-fpm.
 #
@@ -27,9 +24,13 @@
 # [*fpm_max_spare_servers*]
 # pm.max_spare_servers for pool.d/www.conf. Only if php_engine is php5-fpm.
 #
+# [*ensure_php_debug_pkgs*]
+# whether to install php5-xdebug' and 'php5-xhprof'
+# Valid values are: present, installed, absent, purged
+#
 # === Examples
 #
-# class { 'php': apc_shm_size => '128M' }
+# class { 'php': memory_limit => '128M' }
 # include php
 #
 # === Authors
@@ -39,13 +40,16 @@
 class php (
   $php_engine            = 'mod-php',
   $memory_limit          = '96M',
-  $apc_shm_size          = '64M',
   $fpm_max_children      = 10,
   $fpm_start_servers     = 4,
   $fpm_min_spare_servers = 2,
-  $fpm_max_spare_servers = 6
+  $fpm_max_spare_servers = 6,
+  $ensure_php_debug_pkgs = 'installed'
 ) {
 
+  if ! ($ensure_php_debug_pkgs in [ 'present', 'installed', 'absent', 'purged' ]) {
+    fail('ensure_php_debug_pkgs parameter has wrong value')
+  }
   case $php_engine {
     mod-php: { $php_engine_pkg = 'libapache2-mod-php5' }
     php-fpm: { $php_engine_pkg = 'php5-fpm' }
@@ -61,50 +65,16 @@ class php (
     'php5-gd',
     'php5-mcrypt',
     'php5-mysql',
-    'php5-memcached',
-    'php5-xdebug',
-    'php5-xhprof'
+    'php5-memcached'
  ]:
       ensure  => installed,
   }
 
-  if $::lsbrelease == 'precise' {
-    package { 'php5-apc':
-      ensure  => installed,
-    }
-    package { 'php5-suhosin':
-      ensure  => installed,
-    }
-
-    file { 'apc.ini':
-      path    => '/etc/php5/conf.d/apc.ini',
-      ensure  => present,
-      content => template('php/conf.d/apc.ini.erb'),
-      owner   => 'root',
-      group   => 'root',
-      mode    => '0444',
-      require => Package['php-apc'],
-    }
-
-    file { 'suhosin.ini':
-      path    => '/etc/php5/conf.d/suhosin.ini',
-      ensure  => present,
-      content => template('php/conf.d/suhosin.ini.erb'),
-      owner   => 'root',
-      group   => 'root',
-      mode    => '0444',
-      require => Package['php5-suhosin'],
-    }
-
-    # cli-php.ini needs the php5-suhosin package, but only on precise:
-    Package['php5-suhosin'] -> File['cli-php.ini']
-
-    # we want the php5-fpm to be notified on change
-    # @todo: we should notify apache if we use libapache2-mod-php5
-    if $php_engine == 'php-fpm' {
-      File['suhosin.ini'] ~> Service['php5-fpm']
-      File['apc.ini'] ~> Service['php5-fpm']
-    }
+  package { [
+    'php5-xdebug',
+    'php5-xhprof'
+ ]:
+      ensure  => $ensure_php_debug_pkgs,
   }
 
   if $php_engine == 'php-fpm' {
