@@ -38,7 +38,6 @@ class drupal_sandbox (
     default => $php_memory_limit,
   }
   $memcache_mem              = $drupal_sandbox::params::memcache_mem
-  $apc_mem                   = $drupal_sandbox::params::apc_mem
 
   $apache_port               = $drupal_sandbox::params::apache_port
   $apache_mpm_wk_max_clients = $drupal_sandbox::params::apache_mpm_wk_max_clients
@@ -64,8 +63,6 @@ class drupal_sandbox (
   class {'php':
     php_engine            => 'php-fpm',
     memory_limit          => $the_php_memory_limit,
-    php_apc_pkg           => 'php5-apc',
-    apc_shm_size          => $apc_mem,
     fpm_max_children      => $fpm_max_children,
     fpm_start_servers     => $fpm_start_servers,
     fpm_min_spare_servers => $fpm_min_spare_servers,
