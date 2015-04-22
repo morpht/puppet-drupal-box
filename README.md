@@ -70,7 +70,12 @@ Create info.example.com virtualhost with phpinfo(), using the vhost directory:
 mkdir info.example.com
 echo '<?php phpinfo(); ?>' > info.example.com/index.php
 ```
-Make info.example.com resolve to your virtual machine and point your browser at http://info.example.com
+Make info.example.com resolve to your vagrant machine:
+```
+echo '10.8.8.99 info.example.com' | sudo tee -a /etc/hosts
+```
+and point your browser at http://info.example.com
+
 
 ## Author
 Marji Cermak <marji@morpht.com>
