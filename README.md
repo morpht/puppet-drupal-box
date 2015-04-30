@@ -20,7 +20,7 @@ Go to the VM or server you want to provision and run the following commands.
 
 ```
 sudo apt-get update && sudo apt-get --yes install git
-git clone git://github.com/morpht/puppet-drupal-box.git /tmp/puppet-drupal-box
+git clone https://github.com/morpht/puppet-drupal-box.git /tmp/puppet-drupal-box
 sudo mv /tmp/puppet-drupal-box /opt/
 cd /opt/puppet-drupal-box/
 git checkout precise
