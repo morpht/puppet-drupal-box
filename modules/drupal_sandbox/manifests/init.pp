@@ -13,12 +13,16 @@
 # [*php_memory_limit*]
 # PHP memory_limit.
 #
+# [*use_varnish*]
+# Whether to install and use varnish.
+#
 # === Authors
 #
 # Marji Cermak <marji@morpht.com>
 #
 class drupal_sandbox (
     $virtual_document_root     = '/srv/www/vhost/%0',
+    $use_varnish               = false,
     $php_memory_limit          = $drupal_sandbox::params::php_memory_limit,
     $apache_addr               = $drupal_sandbox::params::apache_addr,
     $apache_port               = $drupal_sandbox::params::apache_port,
@@ -31,6 +35,10 @@ class drupal_sandbox (
     $innodb_buffer_pool_size   = $drupal_sandbox::params::innodb_buffer_pool_size,
     $innodb_log_file_size      = $drupal_sandbox::params::innodb_log_file_size
 ) inherits drupal_sandbox::params {
+
+  if ! ($use_varnish == false or $use_varnish == true) {
+    fail('use_varnish must be true of false (without quotes)')
+  }
 
   Exec { path => '/usr/bin:/bin:/usr/sbin:/sbin' }
 
@@ -68,19 +76,28 @@ class drupal_sandbox (
 
   class { 'ntpdate': }
 
+  # If we don't use varnish and apache_port was not explicitly defined,
+  # use port 80 (where varnish would normally listen).
+  if ! $use_varnish and ($apache_port == $drupal_sandbox::params::apache_port) {
+    $this_apache_port = 80
+  } else {
+    $this_apache_port = $apache_port
+  }
   class { 'apache2':
     addr               => $apache_addr,
-    port               => $apache_port,
+    port               => $this_apache_port,
     mpm_wk_max_clients => $apache_mpm_wk_max_clients,
   }
   class { 'apache2::vhost_alias':
     addr                  => $apache_addr,
-    port                  => $apache_port,
+    port                  => $this_apache_port,
     virtual_document_root => $virtual_document_root
   }
 
+  if $use_varnish {
+    include varnish
+  }
 
-  include varnish
 
 
   # install postfix, set local email delivery to one central account:
