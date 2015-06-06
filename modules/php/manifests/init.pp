@@ -79,6 +79,7 @@ class php (
 
   if $php_engine == 'php-fpm' {
 
+    package { 'libapache2-mod-php5': ensure => purged }
     service { 'php5-fpm':
       ensure     => running,
       enable     => true,
