@@ -20,6 +20,7 @@
 class drupal_sandbox (
     $virtual_document_root     = '/srv/www/vhost/%0',
     $php_memory_limit          = $drupal_sandbox::params::php_memory_limit,
+    $apache_addr               = $drupal_sandbox::params::apache_addr,
     $apache_port               = $drupal_sandbox::params::apache_port,
     $memcache_mem              = $drupal_sandbox::params::memcache_mem,
     $apache_mpm_wk_max_clients = $drupal_sandbox::params::apache_mpm_wk_max_clients,
@@ -68,10 +69,12 @@ class drupal_sandbox (
   class { 'ntpdate': }
 
   class { 'apache2':
+    addr               => $apache_addr,
     port               => $apache_port,
     mpm_wk_max_clients => $apache_mpm_wk_max_clients,
   }
   class { 'apache2::vhost_alias':
+    addr                  => $apache_addr,
     port                  => $apache_port,
     virtual_document_root => $virtual_document_root
   }
