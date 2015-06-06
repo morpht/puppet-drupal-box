@@ -50,6 +50,12 @@ class apache2 (
     group  => 'root',
     mode   => '0755',
   }
+  file { '/srv/www/fastcgi' :
+    ensure => directory,
+    owner  => 'root',
+    group  => 'root',
+    mode   => '0755',
+  }
 
   service { 'apache2':
     ensure   => running,
