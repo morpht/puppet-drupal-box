@@ -18,11 +18,18 @@
 # Marji Cermak <marji@morpht.com>
 #
 class drupal_sandbox (
-    $virtual_document_root = '/srv/www/vhost/%0',
-    $php_memory_limit      = undef
-) {
-
-  include drupal_sandbox::params
+    $virtual_document_root     = '/srv/www/vhost/%0',
+    $php_memory_limit          = $drupal_sandbox::params::php_memory_limit,
+    $apache_port               = $drupal_sandbox::params::apache_port,
+    $memcache_mem              = $drupal_sandbox::params::memcache_mem,
+    $apache_mpm_wk_max_clients = $drupal_sandbox::params::apache_mpm_wk_max_clients,
+    $fpm_max_children          = $drupal_sandbox::params::fpm_max_children,
+    $fpm_start_servers         = $drupal_sandbox::params::fpm_start_servers,
+    $fpm_min_spare_servers     = $drupal_sandbox::params::fpm_min_spare_servers,
+    $fpm_max_spare_servers     = $drupal_sandbox::params::fpm_max_spare_servers,
+    $innodb_buffer_pool_size   = $drupal_sandbox::params::innodb_buffer_pool_size,
+    $innodb_log_file_size      = $drupal_sandbox::params::innodb_log_file_size
+) inherits drupal_sandbox::params {
 
   Exec { path => '/usr/bin:/bin:/usr/sbin:/sbin' }
 
@@ -31,23 +38,6 @@ class drupal_sandbox (
 
   # Set up all apt sources:
   include drupal_sandbox::apt_src
-
-
-  $the_php_memory_limit = $php_memory_limit ? {
-    undef   => $drupal_sandbox::params::php_memory_limit,
-    default => $php_memory_limit,
-  }
-  $memcache_mem              = $drupal_sandbox::params::memcache_mem
-
-  $apache_port               = $drupal_sandbox::params::apache_port
-  $apache_mpm_wk_max_clients = $drupal_sandbox::params::apache_mpm_wk_max_clients
-  $fpm_max_children          = $drupal_sandbox::params::fpm_max_children
-  $fpm_start_servers         = $drupal_sandbox::params::fpm_start_servers
-  $fpm_min_spare_servers     = $drupal_sandbox::params::fpm_min_spare_servers
-  $fpm_max_spare_servers     = $drupal_sandbox::params::fpm_max_spare_servers
-
-  $innodb_buffer_pool_size   = $drupal_sandbox::params::innodb_buffer_pool_size
-  $innodb_log_file_size      = $drupal_sandbox::params::innodb_log_file_size
 
 
   $mysqlpass                 = random_password(24)
@@ -62,7 +52,7 @@ class drupal_sandbox (
 
   class {'php':
     php_engine            => 'php-fpm',
-    memory_limit          => $the_php_memory_limit,
+    memory_limit          => $php_memory_limit,
     fpm_max_children      => $fpm_max_children,
     fpm_start_servers     => $fpm_start_servers,
     fpm_min_spare_servers => $fpm_min_spare_servers,
