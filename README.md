@@ -10,7 +10,7 @@ Currently for Ubuntu 14.04 LTS (trusty).
 -    php-fpm 5.5
 -    percona server 5.5
 -    memcached
--    drush 6.4
+-    drush 8.0.0
 -    ntpdate (executed daily from cron)
 -    postfix, delivering all mails (catch-all) to the 'localmail' user.
 
