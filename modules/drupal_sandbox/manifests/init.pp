@@ -57,7 +57,7 @@ class drupal_sandbox (
     innodb_log_file_size    => $innodb_log_file_size
   }
 
-  class { 'drush': version => '6.6.0' }
+  class { 'drush': version => '6.7.0' }
 
   class {'php':
     php_engine            => 'php-fpm',
