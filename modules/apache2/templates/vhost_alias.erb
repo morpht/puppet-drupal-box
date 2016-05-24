@@ -26,7 +26,7 @@
   Action php-fastcgi /php5.fastcgi virtual
 
 
-  <Directory /srv/www/vhost/*/docroot>
+  <Directory <%= @virtual_document_root %>>
     RewriteEngine on
 
     # Prevent invalid request methods
