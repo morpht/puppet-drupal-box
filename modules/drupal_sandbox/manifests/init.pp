@@ -59,12 +59,11 @@ class drupal_sandbox (
     innodb_log_file_size    => $innodb_log_file_size
   }
 
-  class { 'drush': version => '6.4.0' }
+  class { 'drush': version => '6.7.0' }
 
   class {'php':
     php_engine            => 'php-fpm',
     memory_limit          => $the_php_memory_limit,
-    php_apc_pkg           => 'php5-apc',
     apc_shm_size          => $apc_mem,
     fpm_max_children      => $fpm_max_children,
     fpm_start_servers     => $fpm_start_servers,

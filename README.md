@@ -7,11 +7,11 @@ Currently for Ubuntu 12.04 LTS (and possible newer versions).
 ## Used components
 -    varnish 3 (port 80)
 -    apache 2.2  (port 8080) with mod_vhost_alias
--    latest php-fpm 5.3 (currently 5.3.29, from http://packages.dotdeb.org squeeze)
+-    latest php-fpm 5.3
 -    percona server 5.5
 -    memcached
 -    php-apc
--    drush 6.4.0
+-    drush 6.7.0
 -    ntpdate (executed daily from cron)
 -    postfix, delivering all mails (catch-all) to the 'localmail' user.
 

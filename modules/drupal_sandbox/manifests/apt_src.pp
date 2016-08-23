@@ -54,11 +54,4 @@ class drupal_sandbox::apt_src {
     key_server => 'keys.gnupg.net',
   }
 
-  apt::source { 'dotdeb':
-    location   => 'http://packages.dotdeb.org',
-    release    => 'squeeze',
-    repos      => 'all',
-    key        => '89DF5277',
-    key_source => 'http://www.dotdeb.org/dotdeb.gpg',
-  }
 }

@@ -39,7 +39,7 @@
 # pm.max_spare_servers for pool.d/www.conf. Only if php_engine is php5-fpm.
 #
 # [*ensure_php_debug_pkgs*]
-# whether to install php5-xdebug' and 'php5-xhprof'
+# whether to install php5-xdebug'
 # Valid values are: present, installed, absent, purged
 #
 # === Examples
@@ -62,7 +62,7 @@ class php (
   $fpm_start_servers     = 4,
   $fpm_min_spare_servers = 2,
   $fpm_max_spare_servers = 6,
-  $ensure_php_debug_pkgs = 'installed'
+  $ensure_php_debug_pkgs = 'purged'
 ) {
 
   if ! ($ensure_php_debug_pkgs in [ 'present', 'installed', 'absent', 'purged' ]) {
@@ -113,8 +113,7 @@ class php (
   package { $remove_apc_pkg: ensure => purged }
 
   package { [
-    'php5-xdebug',
-    'php5-xhprof'
+    'php5-xdebug'
  ]:
       ensure  => $ensure_php_debug_pkgs,
   }
