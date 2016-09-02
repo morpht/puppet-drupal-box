@@ -1,0 +1,26 @@
+/var/log/php5-fpm.log {
+  rotate <%= @fpm_logrotate_rotate %>
+  <%= @fpm_logrotate_when %>
+  missingok
+  notifempty
+  compress
+  delaycompress
+  postrotate
+    <%= @reopenlogs %>
+  endscript
+}
+
+<%= @php_error_log_path %> {
+  rotate <%= @fpm_logrotate_rotate %>
+  <%= @fpm_logrotate_when %>
+  missingok
+  notifempty
+  compress
+  delaycompress
+  postrotate
+    /usr/bin/touch <%= @php_error_log_path %>
+    /bin/chown <%= @php_error_log_owner %>:<%= @php_error_log_group %> <%= @php_error_log_path %>
+    /bin/chmod <%= @php_error_log_mode %> <%= @php_error_log_path %>
+    <%= @reopenlogs %>
+  endscript
+}
