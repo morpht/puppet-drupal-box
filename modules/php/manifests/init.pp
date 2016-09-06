@@ -5,10 +5,6 @@
 #
 # === Parameters
 #
-# [*php_engine*]
-#  What php engine to use.
-#  Expected values: libapache2-mod-php5 or php5-fpm
-#
 # [*memory_limit]
 # PHP memory limit
 #
@@ -27,16 +23,16 @@
 # If not specified (undef), it will be set to the same value as apc.ttl
 #
 # [*fpm_max_children*]
-# pm.max_children for pool.d/www.conf. Only if php_engine is php5-fpm.
+# pm.max_children for pool.d/www.conf.
 #
 # [*fpm_start_servers*]
-# pm.start_servers for pool.d/www.conf. Only if php_engine is php5-fpm.
+# pm.start_servers for pool.d/www.conf.
 #
 # [*fpm_min_spare_servers*]
-# pm.min_spare_servers for pool.d/www.conf. Only if php_engine is php5-fpm.
+# pm.min_spare_servers for pool.d/www.conf.
 #
 # [*fpm_max_spare_servers*]
-# pm.max_spare_servers for pool.d/www.conf. Only if php_engine is php5-fpm.
+# pm.max_spare_servers for pool.d/www.conf.
 #
 # [*fpm_logrotate_when*]
 # If it is not undef, /etc/logrotate.d/php will be created and the value
@@ -76,7 +72,6 @@
 # Marji Cermak <marji@morpht.com>
 #
 class php (
-  $php_engine            = 'mod-php',
   $memory_limit          = '96M',
   $apc_shm_size          = '64M',
   $php_apc_pkg           = 'php-apc',
@@ -116,14 +111,9 @@ class php (
     default => $apc_user_ttl,
   }
 
-  case $php_engine {
-    mod-php: { $php_engine_pkg = 'libapache2-mod-php5' }
-    php-fpm: { $php_engine_pkg = 'php5-fpm' }
-    default: { fail("Unrecognised php engine.") }
-  }
   package { [
     'php5',
-    $php_engine_pkg,
+    'php5-fpm',
     'php-pear',
     'php5-cli',
     'php5-common',
@@ -148,26 +138,24 @@ class php (
       ensure  => $ensure_php_debug_pkgs,
   }
 
-  if $php_engine == 'php-fpm' {
 
-    service { 'php5-fpm':
-      ensure     => running,
-      enable     => true,
-      hasrestart => true,
-      require    => Package['php5-fpm'],
-      restart    => '/etc/init.d/php5-fpm reload',
-      subscribe  => File['apc.ini', 'suhosin.ini' ],
-    }
+  service { 'php5-fpm':
+    ensure     => running,
+    enable     => true,
+    hasrestart => true,
+    require    => Package['php5-fpm'],
+    restart    => '/etc/init.d/php5-fpm reload',
+    subscribe  => File['apc.ini', 'suhosin.ini' ],
+  }
 
-    file { '/etc/php5/fpm/pool.d/www.conf':
-      ensure  => present,
-      content => template('php/fpm/pool.d/www.conf.erb'),
-      owner   => 'root',
-      group   => 'root',
-      mode    => '0644',
-      notify  => Service['php5-fpm'],
-      require => Package['php5-fpm'],
-    }
+  file { '/etc/php5/fpm/pool.d/www.conf':
+    ensure  => present,
+    content => template('php/fpm/pool.d/www.conf.erb'),
+    owner   => 'root',
+    group   => 'root',
+    mode    => '0644',
+    notify  => Service['php5-fpm'],
+    require => Package['php5-fpm'],
   }
 
   file { 'apc.ini':
