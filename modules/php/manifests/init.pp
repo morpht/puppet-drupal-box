@@ -5,24 +5,20 @@
 #
 # === Parameters
 #
-# [*php_engine*]
-#  What php engine to use.
-#  Expected values: libapache2-mod-php5 or php5-fpm
-#
 # [*memory_limit]
 # PHP memory limit
 #
 # [*fpm_max_children*]
-# pm.max_children for pool.d/www.conf. Only if php_engine is php5-fpm.
+# pm.max_children for pool.d/www.conf.
 #
 # [*fpm_start_servers*]
-# pm.start_servers for pool.d/www.conf. Only if php_engine is php5-fpm.
+# pm.start_servers for pool.d/www.conf.
 #
 # [*fpm_min_spare_servers*]
-# pm.min_spare_servers for pool.d/www.conf. Only if php_engine is php5-fpm.
+# pm.min_spare_servers for pool.d/www.conf.
 #
 # [*fpm_max_spare_servers*]
-# pm.max_spare_servers for pool.d/www.conf. Only if php_engine is php5-fpm.
+# pm.max_spare_servers for pool.d/www.conf.
 #
 # [*fpm_logrotate_when*]
 # If it is not undef, /etc/logrotate.d/php will be created and the value
@@ -39,6 +35,15 @@
 # the php5-fpm service / daemon itself (which runs as root while workers
 # run as www-data, they also have different timestamp format).
 #
+# [*php_error_log_mode*]
+# File mode of the php error log file.
+#
+# [*php_error_log_owner*]
+# File owner of the php error log file.
+#
+# [*php_error_log_group*]
+# Group owner of the php error log file.
+#
 # [*ensure_php_debug_pkgs*]
 # whether to install php5-xdebug' and 'php5-xhprof'
 # Valid values are: present, installed, absent, purged
@@ -53,7 +58,6 @@
 # Marji Cermak <marji@morpht.com>
 #
 class php (
-  $php_engine            = 'mod-php',
   $memory_limit          = '96M',
   $fpm_max_children      = 10,
   $fpm_start_servers     = 4,
@@ -63,20 +67,17 @@ class php (
   $fpm_logrotate_when    = 'weekly',
   $php_error_log_path    = '/var/log/php5-errors.log',
   $php_error_log_mode    = '0640',
-  $ensure_php_debug_pkgs = 'installed'
+  $php_error_log_owner   = 'www-data',
+  $php_error_log_group   = 'www-data',
+  $ensure_php_debug_pkgs = 'purged'
 ) {
 
   if ! ($ensure_php_debug_pkgs in [ 'present', 'installed', 'absent', 'purged' ]) {
     fail('ensure_php_debug_pkgs parameter has wrong value')
   }
-  case $php_engine {
-    mod-php: { $php_engine_pkg = 'libapache2-mod-php5' }
-    php-fpm: { $php_engine_pkg = 'php5-fpm' }
-    default: { fail("Unrecognised php engine.") }
-  }
   package { [
     'php5',
-    $php_engine_pkg,
+    'php5-fpm',
     'php-pear',
     'php5-cli',
     'php5-common',
@@ -96,26 +97,23 @@ class php (
       ensure  => $ensure_php_debug_pkgs,
   }
 
-  if $php_engine == 'php-fpm' {
+  package { 'libapache2-mod-php5': ensure => purged }
+  service { 'php5-fpm':
+    ensure     => running,
+    enable     => true,
+    hasrestart => true,
+    require    => Package['php5-fpm'],
+    provider   => upstart,
+  }
 
-    package { 'libapache2-mod-php5': ensure => purged }
-    service { 'php5-fpm':
-      ensure     => running,
-      enable     => true,
-      hasrestart => true,
-      require    => Package['php5-fpm'],
-      provider   => upstart,
-    }
-
-    file { '/etc/php5/fpm/pool.d/www.conf':
-      ensure  => present,
-      content => template('php/fpm/pool.d/www.conf.erb'),
-      owner   => 'root',
-      group   => 'root',
-      mode    => '0644',
-      notify  => Service['php5-fpm'],
-      require => Package['php5-fpm'],
-    }
+  file { '/etc/php5/fpm/pool.d/www.conf':
+    ensure  => present,
+    content => template('php/fpm/pool.d/www.conf.erb'),
+    owner   => 'root',
+    group   => 'root',
+    mode    => '0644',
+    notify  => Service['php5-fpm'],
+    require => Package['php5-fpm'],
   }
 
   if $fpm_logrotate_when {
@@ -130,8 +128,8 @@ class php (
   file { 'php_error_log':
     ensure  => file,
     path    => $php_error_log_path,
-    owner   => 'www-data',
-    group   => 'www-data',
+    owner   => $php_error_log_owner,
+    group   => $php_error_log_group,
     mode    => $php_error_log_mode,
     require => Package['php5-fpm'],
     notify  => Service['php5-fpm'],

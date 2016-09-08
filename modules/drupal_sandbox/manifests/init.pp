@@ -60,7 +60,6 @@ class drupal_sandbox (
   class { 'drush': version => '6.7.0' }
 
   class {'php':
-    php_engine            => 'php-fpm',
     memory_limit          => $php_memory_limit,
     fpm_max_children      => $fpm_max_children,
     fpm_start_servers     => $fpm_start_servers,
