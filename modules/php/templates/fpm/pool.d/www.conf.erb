@@ -222,6 +222,9 @@ pm.max_requests = 500
 ;       may conflict with a real PHP file.
 ; Default Value: not set
 ;pm.status_path = /status
+<% if @fpm_pm_status_path -%>
+pm.status_path = <%= @fpm_pm_status_path %>
+<% end -%>
 
 ; The ping URI to call the monitoring page of FPM. If this value is not set, no
 ; URI will be recognized as a ping page. This could be used to test from outside
@@ -234,6 +237,9 @@ pm.max_requests = 500
 ;       may conflict with a real PHP file.
 ; Default Value: not set
 ;ping.path = /ping
+<% if @fpm_ping_path -%>
+ping.path = <%= @fpm_ping_path %>
+<% end -%>
 
 ; This directive may be used to customize the response of a ping request. The
 ; response is formatted as text/plain with a 200 response code.
