@@ -7,7 +7,7 @@ ln -s /opt/puppet-drupal-box/modules /etc/puppet/modules
 # provision the stack:
 puppet apply -e 'include drupal_sandbox'
 
-dversion='8.1.2'
+dversion='8.1.3'
 echo "==== Installing Drush ${dversion}  ===="
 mkdir /opt/drush-${dversion}
 wget https://github.com/drush-ops/drush/releases/download/${dversion}/drush.phar -O /opt/drush-${dversion}/drush
