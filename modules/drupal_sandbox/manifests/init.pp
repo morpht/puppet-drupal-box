@@ -57,7 +57,14 @@ class drupal_sandbox (
     innodb_log_file_size    => $innodb_log_file_size
   }
 
+
+  # Make sure we have PHP installed before drush
+  Class['Php'] -> Class['Drush']
+
   class { 'drush': version => '6.7.0' }
+
+  # Force apt-get upadate to happen before we start installing php packages
+  Class['Apt::Update'] ~> Class['Php']
 
   class {'php':
     memory_limit          => $php_memory_limit,
